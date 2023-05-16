@@ -1,0 +1,217 @@
+﻿@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model ExercisesViewModel;
+
+<!-- If the Exercises list is not null and has entries -->
+@if (Model.Exercises != null && Model.Exercises.Any() == true)
+{
+    // Loop through each exercise in the list
+    @foreach (Exercises exercise in Model.Exercises)
+    {
+        // Set the exercise description, if no description is found, set it to a default value
+        string description = exercise.Description == null ? "<No description found>" : exercise.Description;
+        <div class="bg-primary w-100 p-3 mb-1 rounded d-flex gap-3 flex-fill align-items-center justify-content-between">
+            <div class="text-white fw-bold gap-2 d-flex align-items-center" style="width: 100px; overflow-wrap: break-word;">
+                <!-- Determines favorite icon status -->
+                <a class="favorite-button" href="#" data-exercise-id="@exercise.Id" data-favorited="@exercise.UserFavorited">
+                    @if (exercise.UserFavorited == true)
+                    {
+                        <i class="fa-solid fa-star text-warning"></i>
+                    }
+                    else if (Model.User == null)
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                </a>
+                <span class="text-center" style="min-width:100px; padding-right: 10px;">@exercise.Name</span>
+            </div>
+            <div class="text-white" style="padding-left:20px; flex-grow: 1; overflow-wrap: break-word;">@description</div>
+            <div class="text-white d-flex gap-3 align-items-center">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+
+    }
+
+    // If there are exercises to display and the tab is set to exercises or null
+    @if (Model.Exercises != null && (Model.Tab == "exercises" || Model.Tab == null))
+    {
+        // Calculate the number of pages
+        var totalPages = Model.Exercises.TotalPages;
+        // Calculate the current page index
+        var currentPage = Model.Exercises.PageIndex;
+        // Calculate the page range to display
+        var pageRange = 3;
+        // Calculate the minimum and maximum page numbers to display
+        var minPage = Math.Max(1, currentPage - pageRange);
+        var maxPage = Math.Min(totalPages, currentPage + pageRange);
+
+        <nav aria-label="Exercise pagination">
+             <ul class="pagination justify-content-center">
+             <!-- If the Exercise list has a previous page -->
+             @if (Model.Exercises.HasPreviousPage)
+             {
+                 <li class="page-item">
+                      <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = Model.Exercises.PageIndex - currentPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                 </li>
+             }
+             <!-- If the user clicks on a page number -->
+             @for (var i = minPage; i <= maxPage; i++)
+             {
+                 <li class="page-item @(i == currentPage ? "active" : "")">
+                      <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = i, tab = Model.Tab, sortBy = ViewBag.SortBy })">@i</a>
+                 </li>
+             }
+             <!-- If the Exercise list has a next page -->
+             @if (Model.Exercises.HasNextPage)
+             {
+                  <li class="page-item">
+                       <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = Model.Exercises.PageIndex + maxPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                       </a>
+                  </li>
+             }
+             </ul>
+        </nav>
+    }
+   // Else if there are no exercises in the list, and there are FavoriteExercises to display
+} else if (Model.FavoriteExercises != null && Model.FavoriteExercises.Any() == true)
+{
+    // Loop through each exercise in the list
+    @foreach (Exercises exercise in Model.FavoriteExercises)
+    {
+        // Set the exercise description, if no description is found, set it to a default value
+        string description = exercise.Description == null ? "<No description found>" : exercise.Description;
+                <div class="bg-primary w-100 p-3 mb-1 rounded d-flex gap-3 flex-fill align-items-center justify-content-between">
+                    <div class="text-white fw-bold d-flex gap-2 align-items-center" style="width:100px; overflow-wrap: break-word;">
+                        <a class="favorite-button" href="#" data-exercise-id="@exercise.Id" data-favorited="@exercise.UserFavorited">
+                    <!-- Determines favorite icon status -->
+                        @if (exercise.UserFavorited == true)
+                        {
+                            <i class="fa-solid fa-star text-warning"></i>
+                        }
+                        else if (Model.User == null)
+                        {
+                            <i class="fa-regular fa-star text-warning"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-regular fa-star text-warning"></i>
+                        }
+                        </a>
+                        <span class="text-center" style="min-width:100px; padding-right: 10px;">@exercise.Name</span>
+                    </div>
+                    <div class="text-white" style="padding-left:20px; flex-grow: 1; overflow-wrap: break-word;">@description</div>
+                    <div class="text-white d-flex gap-3 align-items-center">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </div>
+    }
+
+    // If there are FavoriteExercises to display and the tab is set to favorites or null
+    @if (Model.FavoriteExercises != null && (Model.Tab == "favorites" || Model.Tab == null))
+    {
+        // Calculate the number of pages
+        var totalPages = Model.FavoriteExercises.TotalPages;
+        // Calculate the current page index
+        var currentPage = Model.FavoriteExercises.PageIndex;
+        // Calculate the page range to display
+        var pageRange = 3;
+        var minPage = Math.Max(1, currentPage - pageRange);
+        var maxPage = Math.Min(totalPages, currentPage + pageRange);
+
+        <nav aria-label="Exercise pagination">
+            <ul class="pagination justify-content-center">
+                <!-- If the FavoriteExercise list has a previous page -->
+                @if (Model.FavoriteExercises.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = Model.FavoriteExercises.PageIndex - currentPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+                <!-- If the user clicks on a page number -->
+                @for (var i = minPage; i <= maxPage; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = i, tab = Model.Tab, sortBy = ViewBag.SortBy })">@i</a>
+                    </li>
+                }
+                <!-- If the FavoriteExercise list has a next page -->
+                @if (Model.FavoriteExercises.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserExercises", new { pageNumber = Model.FavoriteExercises.PageIndex + maxPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+<!-- AJAX Calls to allow favoriting, and switching pages. -->
+<script defer>
+    $(function () {
+        // When the favorite button is clicked
+        $('.favorite-button').click(function (event) {
+            // Prevent the page from reloading
+            event.preventDefault();
+            // Get the exercise ID and favorite status
+            var exerciseId = $(this).data('exercise-id');
+            var favorited = $(this).data('favorited');
+            // Get the URL to send the request to
+            var url = favorited ? '@Url.Action("UnfavoriteExercise", "Action")' : '@Url.Action("FavoriteExercise", "Action")';
+            $.ajax({
+                // Send the request as a POST
+                type: 'POST',
+                // The URL to send the request to
+                url: url,
+                // The data to send in the request
+                data: {
+                    // The exercise to favorite/unfavorite
+                    id: exerciseId,
+                    // The current tab
+                    tab: '@Model.Tab',
+                    // If exercises and favorite exercises are both null, then there is no page number, otherwise, if exercises is null, then the page number is the index of the Favorite Exercises, otherwise, the page number is the Index of the Exercises
+                    pageNumber: '@(Model.Exercises == null && Model.FavoriteExercises == null ? "" : (Model.Exercises == null ? Model.FavoriteExercises.PageIndex : Model.Exercises.PageIndex))',
+                    // The current user
+                    currentUser: '@User.Identity.Name'
+                },
+                success: function (data) {
+                    // Update the UI to reflect the new favorite status
+                    var icon = favorited ? '<i class="fa-regular fa-star text-warning"></i>' : '<i class="fa-solid fa-star text-warning"></i>';
+                    // Update the icon
+                    $('.favorite-button[data-exercise-id="' + exerciseId + '"]').html(icon);
+                    $('.favorite-button[data-exercise-id="' + exerciseId + '"]').data('favorited', !favorited);
+                }
+            });
+        });
+    });
+
+    $(function () {
+        // Add event handler for pagination links
+        $('.pagination a').on('click', function (event) {
+            event.preventDefault();
+
+            // Get the URL for the AJAX request
+            var url = $(this).attr('href');
+
+            // Make the AJAX request
+            $.get(url, function (data) {
+            // Extract the exercise items from the returned data
+            var exerciseItems = $(data).find('#exercise-container').html();
+
+            // Update the exercise items container with the extracted items
+            $('#exercise-container').html(exerciseItems);
+        });
+        });
+    });
+</script>

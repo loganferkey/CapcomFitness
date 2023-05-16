@@ -1,0 +1,322 @@
+﻿@using CapcomFitness.ViewModels;
+@model WeightHistoryViewModel
+@{
+	ViewData["Title"] = "Tracker";
+
+	// Seperating weights and date's for graph
+	var points = new List<object>().Select(t => new { y = default(float), x = default(string) }).ToList();
+
+	// Looping through the passed it weight histories and splitting their dates and weights for labels and data points on the chart
+	// Using chart.js!
+	if(Model.WeightHistories != null)
+	{
+		foreach (WeightHistory wh in Model.WeightHistories.Reverse())
+		{
+			points.Add(new { y = wh!.Weight, x = wh!.DateEntered!.ToString("yyyy-MM-ddTHH:mm:ss") });
+		}
+	}
+
+	// Who would've known that making a list of javascript object structure would be so hard
+	points.ToArray();
+}
+
+<div id="AddWeightModal" class="modal shadow-lg">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header pb-0">
+				<h5 class="modal-title">Add Weight Record</h5>
+				<button type="button" class="btn-close btn-primary" data-dismiss="modal"></button>
+			</div>
+			<div class="modal-body pt-0">
+				<form asp-controller="Action" asp-action="AddWeightHistory">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="form-group">
+						<label name="weight" class="control-label">Weight (lbs)</label>
+						<input name="weight" class="form-control" type="number" required/>
+					</div>
+					<div class="form-group pt-2">
+						<input type="submit" value="Create" class="btn btn-primary" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- BMI Calculator Modal -->
+<div id="CalculateBMIModal" class="modal shadow-lg">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header pb-0">
+				<button type="button" class="btn-close btn-primary" data-dismiss="modal"></button>
+			</div>
+			<div class="modal-body pt-0">
+				<form id="bmiForm">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<label id="info" class="text-center w-100 fw-bold">Enter your Height and Weight</label>
+					<div class="form-group">
+						<label for="feet" id="feetLabel" class="w-100 text-center">Feet</label>
+						<input name="feet" id="feetInput" class="form-control" type="number" required />
+						<label for="inches" id="inchesLabel" class="w-100 text-center">Inches</label>
+						<input name="inches" id="inchesInput" class="form-control" type="number" required />
+						<label for="weight" id="weightLabel" class="w-100 text-center">Weight (lbs)</label>
+						<input name="weight" id="weightInput" class="form-control" type="number" required />
+						<p id="BMIOutput" class="w-100 text-center fw-bold fs-2" style="display: none;"></p>
+						<p id="BMIError" class="w-100 text-center text-danger" style="display:none;"></p>
+					</div>
+					<div class="form-group pt-2 d-flex justify-content-center">
+						<input id="CalculateBMI" value="Calculate" class="btn btn-primary" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- If the list of Weight Histories has no entries -->
+@if (Model.WeightHistoriesPaginated == null || !Model.WeightHistoriesPaginated.Any())
+{
+
+	<div class="text-center mt-5">
+		<div class="d-flex flex-column flex-lg-row align-items-center">
+			<div class="mb-3" style="min-width: 50%;">
+				<h5 class="display-5 text-muted fw-bold">That's not good...</h5>
+				<p class="mx-auto" style="line-height: 1.5rem; width: 75%;">
+					It would appear we can't find any weight histories for your account? If you want to start tracking your weight goals, lets get started by adding your first entry below! :)
+				</p>
+				<form class="d-flex d-inline-block align-content-center justify-content-center mx-auto" style="width: 50%" asp-controller="Action" asp-action="AddWeightHistory">
+					<div class="form-group my-auto">
+						<label for="weight">Weight (lbs)</label>
+						<input min="0" name="weight" class="form-control" type="number" required />
+					</div>
+					<div class="form-group my-auto">
+						<label></label>
+						<input type="submit" value="Add Weight" class="btn btn-primary" />
+					</div>
+				</form>
+			</div>
+			<div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/notfound.png" /></div>
+		</div>
+	</div>
+}
+else
+{
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+	<div class="d-flex flex-column gap-1">
+		<div class="mx-auto" style="height: 50vh; width: 75%;"><canvas class="mb-3" id="chart"></canvas></div>
+
+        <div class="row">
+            <div class="col-sm-12 col-lg-10 mx-auto">
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <div class="tab-content w-100">
+                        <div class="tab-pane d-flex gap-1 flex-column">
+                            <div class="w-100 d-flex justify-content-between">
+								<!-- If the user is not null, and they have a list of weight histories -->
+                                @if (Model.User != null && Model.WeightHistoriesPaginated != null)
+                                {
+                                    <p>
+										<!-- Action Links -->
+                                        @Html.ActionLink("Date Desc.", "Tracker", new { sortBy = "date_desc", pageNumber = Model.WeightHistoriesPaginated.PageIndex })
+                                        |
+                                        @Html.ActionLink("Date Asc.", "Tracker", new { sortBy = "date_asc", pageNumber = Model.WeightHistoriesPaginated.PageIndex })
+                                    </p>
+                                }
+								<div>
+									<button class="btn btn-primary float-end" id="AddWeightButton">
+									<i class="fa-solid fa-plus"></i>
+									</button>
+									<button class="btn btn-primary float-end" style="margin-right: 1rem;" id="CalculateBMIButton">
+									Calculate BMI
+									</button>
+								</div>
+                            </div>
+							<div class="w-100 d-flex justify-content-between">
+								<p class="fw-bold">Weight</p>
+								<p class="fw-bold">Date Entered</p>
+							</div>
+							@if (Model.WeightHistories != null && Model.WeightHistories.Any() == true)
+							{
+                            <div id="weightHistory-container">
+                                @Html.Partial("_WeightHistoriesItems", Model)
+                            </div>
+							}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+	@section Scripts {
+	<script>
+		// Get the modal
+		var modal = document.getElementById("AddWeightModal");
+		var bmiModal = document.getElementById("CalculateBMIModal");
+
+		// Get the button that opens the modal
+		var btn = document.getElementById("AddWeightButton");
+		var bmiBtn = document.getElementById("CalculateBMIButton");
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("btn-close")[0];
+		var bmiSpan = document.getElementsByClassName("btn-close")[1];
+
+		// When the user clicks on the button, open the modal
+		btn.onclick = function () {
+			modal.style.display = "block";
+		}
+		bmiBtn.onclick = function () {
+			bmiModal.style.display = "block";
+		}
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function () {
+			modal.style.display = "none";
+		}
+		bmiSpan.onclick = function () {
+			bmiModal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function (event) {
+			if (event.target == modal || event.target == bmiModal) {
+				modal.style.display = "none";
+				bmiModal.style.display = "none";
+			}
+		}
+	</script>
+	<!-- Below is the code for the BMI Calculator Modal -->
+	<script>
+		
+		$(function() {
+			// When the user clicks on the Calculate BMI Button
+			$("#CalculateBMIButton").click(function() {
+				// Gets the elements
+				var feetLabel = document.getElementById("feetLabel");
+				var inchesLabel = document.getElementById("inchesLabel");
+				var weightLabel = document.getElementById("weightLabel");
+				var feetInput = document.getElementById("feetInput");
+				var inchesInput = document.getElementById("inchesInput");
+				var weightInput = document.getElementById("weightInput");
+				var calculateBtn = document.getElementById("CalculateBMI");
+				var info = document.getElementById("info");
+				var BMIOutput = document.getElementById("BMIOutput");
+
+				// Changing the elements display
+				feetLabel.style.display = "block";
+				inchesLabel.style.display = "block";
+				weightLabel.style.display = "block";
+				feetInput.style.display = "block";
+				inchesInput.style.display = "block";
+				weightInput.style.display = "block";
+				calculateBtn.style.display = "block";
+				info.style.display = "block";
+				BMIOutput.style.display = "none";
+
+				// Resetting the input boxes on close
+				$('#feetInput, #inchesInput, #weightInput').val('');
+
+				// Resetting the output
+				BMIOutput.innerText = "";
+			})
+		})
+
+		$(function() {
+			// When the user clicks the Calculate button
+			$("#CalculateBMI").click(function () {
+				var weight = parseInt($("#weightInput").val());
+				var feet = parseInt($("#feetInput").val());
+				var inches = parseInt($("#inchesInput").val());
+				var error = document.getElementById("BMIError");
+
+				// If the values are NaN display an error
+				if(isNaN(weight) || isNaN(feet) || isNaN(inches))
+				{
+					console.log(error);
+					error.style.display = "block";
+					error.innerText = "Please fill in the empty values!";
+				} else {
+					// Calculating the total height in inches
+					var height_in_inches = (feet * 12) + inches;
+					// Calculating the BMI
+					var BMI = (weight / (height_in_inches * height_in_inches)) * 703;
+					// Giving BMI only 1 decimal place
+					BMI = BMI.toFixed(1);
+
+					// Getting the elements
+					var feetLabel = document.getElementById("feetLabel");
+					var inchesLabel = document.getElementById("inchesLabel");
+					var weightLabel = document.getElementById("weightLabel");
+					var feetInput = document.getElementById("feetInput");
+					var inchesInput = document.getElementById("inchesInput");
+					var weightInput = document.getElementById("weightInput");
+					var calculateBtn = document.getElementById("CalculateBMI");
+					var info = document.getElementById("info");
+					var BMIOutput = document.getElementById("BMIOutput");
+
+					// Changing the elements display
+					feetLabel.style.display = "none";
+					inchesLabel.style.display = "none";
+					weightLabel.style.display = "none";
+					feetInput.style.display = "none";
+					inchesInput.style.display = "none";
+					weightInput.style.display = "none";
+					calculateBtn.style.display = "none";
+					info.style.display = "none";
+					BMIOutput.style.display = "block";
+
+					// Setting the BMI Output
+					BMIOutput.innerText = "Your BMI: " + BMI;
+					// Resetting the Error text
+					error.innerText = "";
+				}
+			})
+		})
+		
+	</script>
+	<!-- Below is the code for the graph on the screen! Taken from chart.js documentation and slightly tweaked to fit our weight histories -->
+	<script>
+		const ctx = document.getElementById('chart');
+
+		new Chart(ctx, {
+			type: 'line',
+			data: {
+				datasets: [{
+					label: ' Weight',
+					data: @Html.Raw(Json.Serialize(points)),
+					borderWidth: 3,
+					fill: 'start'
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				interaction: {
+					intersect: false,
+					mode: 'index',
+				},
+				plugins: {
+					tooltip: {
+						position: 'nearest'
+					},
+					legend: {
+						display: false
+					}
+				},
+				tension: 0.2,
+				scales: {
+					y: {
+						beginAtZero: false
+					},
+					x: {
+						type: 'time',
+						parsing: false,
+						time: {
+							unit: 'day'
+						}
+					}
+				}
+			}
+		});
+	</script>
+    }
+}

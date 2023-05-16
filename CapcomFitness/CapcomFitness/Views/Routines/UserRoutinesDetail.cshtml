@@ -1,0 +1,199 @@
+﻿@using CapcomFitness.ViewModels;
+@model RoutineDetailViewModel
+@{
+    string profileImg = "~/images/user.png";
+    if (Model.Routine != null && Model.Routine.User != null) {
+        profileImg = (Model.Routine.User.ProfileImageUrl == "" || Model.Routine.User.ProfileImageUrl == null) ? "/images/user.png" : Model.Routine.User.ProfileImageUrl;
+    }
+}
+
+@if (Model == null || Model.Routine == null)
+{
+    // The routine wasn't found when searching by name
+    <div class="text-center mt-5">
+        <div class="d-flex flex-column flex-lg-row align-items-center">
+            <div class="mb-3" style="min-width: 50%;">
+                <h5 class="display-5 text-muted fw-bold">That's not good...</h5>
+                <p class="mx-auto" style="line-height: 1.5rem; width: 75%;">
+                    It would appear we there wasn't any routines found with that name. Perhaps you clicked a routine that no longer exists?
+                </p>
+            </div>
+            <div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/notfound.png" /></div>
+        </div>
+    </div>
+}
+else
+{
+    // Modal for adding exercises to the routine
+    <div class="modal fade" id="addRoutineExercise" tabindex="-1" aria-labelledby="addRoutineExerciseLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addRoutineExerciseLabel">Add Exercise</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-controller="Action" asp-action="AddRoutineExercise">
+                    <input type="hidden" value="@Model.Routine.Id" name="RoutineId" />
+                    <input type="hidden" value="@Model.Routine.Name" name="routineName" />
+                    <div class="modal-body">
+                        <div class="form-floating mb-2">
+                            <select class="form-control w-100" name="ExerciseId" asp-items="ViewBag.Exercises" required>
+                                <option value="" selected>-- Select An Exercise --</option>
+                            </select>
+                            <label for="Exercise">Choose An Exercise</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="number" min="0" max="100" required name="Sets" placeholder="Sets" class="form-control" />
+                            <label for="Sets">Sets</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="number" min="0" max="100" required name="Reps" placeholder="Reps" class="form-control" />
+                            <label for="Reps">Reps</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <textarea style="min-height: 110px;" maxlength="120" name="AdditionalInfo" placeholder="Additional Info" class="form-control"></textarea>
+                            <label for="Description">Additional Info</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    // Display all the information of the routine, as well as a section of exercies for the routine
+    // If the user that created the routine is viewing the page allow them to add routine exercises/edit the routine
+    <div class="row">
+        <div class="col-sm-12 col-lg-10 mx-auto">
+            <div class="bg-primary p-4 mb-2">
+                <h2 class="fw-bold mb-0 text-white">@Model.Routine.Name</h2> 
+                <small class="text-light flex flex-row align-items-center">Created By <img style="border-radius: 9999px;" width="16" height="16" src="@profileImg" /> <a asp-controller="Account" asp-action="Overview" asp-route-id="@Model.Routine.User.UserName" class="mb-3 text-decoration-none text-light">@Model.Routine!.User.Nickname</a></small>
+                @if (Model.Routine.Description != null)
+                {
+                    <p class="mb-0 mt-1 text-white">@Model.Routine.Description</p>
+                }
+            </div>
+            <div class="bg-primary p-3">
+                <div class="row p-3 pt-0 pb-0">
+                    <!-- Now if the user currently on the page is equal to the one who created the routine, allow them to add exercises -->
+                    <!-- Will convert the exercise select to tomselect so it's searchable eventually -->
+                    @if (Model.User.Id == Model.Routine.User.Id)
+                    {
+                        <button type="button" class="btn btn-primary mb-2 border border-white" data-bs-toggle="modal" data-bs-target="#addRoutineExercise">
+                            Add Exercises!
+                        </button>
+                    }
+                    @if (Model.RoutineExercises != null && Model.RoutineExercises.Count > 0)
+                    {
+                        @if (Model.User.Id == Model.Routine.User.Id)
+                        {
+                            // If exercises exist on this routine
+                            foreach (RoutineExercises re in Model.RoutineExercises)
+                            {
+                                if (re.AdditionalInfo != null && re.AdditionalInfo != "")
+                                {
+                                    <div class="row border-light border-bottom mx-auto align-items-center my-2">
+                                        <div class="col-5 text-center mb-3">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bolder text-white m-0 p-0">@re.Exercise.Name</h6>
+                                                <div class="d-flex flex-row justify-content-center gap-1">
+                                                    <p class="text-white mb-0 pb-0">@re.Sets Set(s)</p>
+                                                    <p class="text-white mb-0 pb-0"> / </p>
+                                                    <p class="text-white mb-0 pb-0">@re.Reps Rep(s)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <p class="text-white mb-0">@re.AdditionalInfo</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <a asp-controller="Action" asp-action="RemoveRoutineExercise" asp-route-id="@re.Id" asp-route-routineName="@re.Routine.Name"><i class="fa-solid fa-trash-can text-white"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row border-light border-bottom mx-auto align-items-center my-2">
+                                        <div class="col-5 text-center mb-3">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bolder text-white m-0 p-0">@re.Exercise.Name</h6>
+                                                <div class="d-flex flex-row justify-content-center gap-1">
+                                                    <p class="text-white mb-0 pb-0">@re.Sets Set(s)</p>
+                                                    <p class="text-white mb-0 pb-0"> / </p>
+                                                    <p class="text-white mb-0 pb-0">@re.Reps Rep(s)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <p class="text-white opacity-50 mb-0">No instructions for this exercise!</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <a asp-controller="Action" asp-action="RemoveRoutineExercise" asp-route-id="@re.Id" asp-route-routineName="@re.Routine.Name"><i class="fa-solid fa-trash-can text-white"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        } else
+                        {
+                            // If exercises exist on this routine
+                            foreach (RoutineExercises re in Model.RoutineExercises)
+                            {
+                                if (re.AdditionalInfo != null && re.AdditionalInfo != "")
+                                {
+                                    <div class="row border-light border-bottom mx-auto align-items-center my-2">
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bolder text-white m-0 p-0">@re.Exercise.Name</h6>
+                                                <div class="d-flex flex-row justify-content-center gap-1">
+                                                    <p class="text-white mb-0 pb-0">@re.Sets Set(s)</p>
+                                                    <p class="text-white mb-0 pb-0"> / </p>
+                                                    <p class="text-white mb-0 pb-0">@re.Reps Rep(s)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <p class="text-white mb-0">@re.AdditionalInfo</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row border-light border-bottom mx-auto align-items-center my-2">
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bolder text-white m-0 p-0">@re.Exercise.Name</h6>
+                                                <div class="d-flex flex-row justify-content-center gap-1">
+                                                    <p class="text-white mb-0 pb-0">@re.Sets Set(s)</p>
+                                                    <p class="text-white mb-0 pb-0"> / </p>
+                                                    <p class="text-white mb-0 pb-0">@re.Reps Rep(s)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-center mb-3">
+                                            <div class="flex flex-col align-items-center justify-content-center">
+                                                <p class="text-white opacity-50 mb-0">No instructions for this exercise!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

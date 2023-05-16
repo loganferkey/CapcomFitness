@@ -1,0 +1,115 @@
+﻿@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model ExercisesViewModel;
+
+@{
+    ViewData["Title"] = "Exercises";
+}
+
+@if (Model == null)
+{
+    // If there aren't any exercises
+    <div class="text-center mt-5">
+        <div class="d-flex flex-column flex-lg-row align-items-center">
+            <div class="mb-3" style="min-width: 50%;">
+                <h5 class="display-5 text-muted fw-bold">We're Sorry!</h5>
+                <p class="mx-auto" style="line-height: 1.5rem; width: 75%;">
+                    It would appear we haven't gotten around to adding exercises quite yet, if you'd like to start it off by adding your own you can do so <a asp-controller="Exercises" asp-action="UserCreateRoutine" class="text-muted">here.</a>
+                </p>
+            </div>
+            <div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/notfound.png" /></div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-12 col-lg-10 mx-auto">
+            <div class="d-flex flex-column flex-sm-row gap-3">
+                <form class="flex-column nav nav-pills">
+                    <!-- If the current tab is the favorites tab -->
+                    @if (Model.Tab == "favorites")
+                    {
+                        <button class="nav-link" name="tab" value="exercises" type="submit">Exercises</button>
+                        <button class="nav-link active" name="tab" value="favorites" type="submit">Favorites</button>
+                    }
+                    else
+                    {
+                        <button class="nav-link active" name="tab" value="exercises" type="submit">Exercises</button>
+                        <button class="nav-link" name="tab" value="favorites" type="submit">Favorites</button>
+                    }
+
+                </form>
+                <div class="tab-content w-100">
+                    <div class="tab-pane d-flex gap-1 flex-column">
+                        <div class="w-100 d-flex justify-content-between">
+                            <!-- The search bar -->
+                            @using (Html.BeginForm("UserExercises", "Exercises", FormMethod.Get, new { id = "searchForm" }))
+                            {
+                                <div class="form-group">
+                                    @Html.TextBox("SearchString", null, new { @class = "form-control text-center", placeholder = "Search", onblur = "submitForm()" })
+                                </div>
+                                @Html.Hidden("tab", Model.Tab)
+                                @if(Model.User != null && Model.Exercises != null)
+                                {
+                                    @Html.Hidden("pageNumber", Model.Exercises.PageIndex)
+                                } else if (Model.User != null && Model.FavoriteExercises != null)
+                                {
+                                    @Html.Hidden("pageNumber", Model.FavoriteExercises.PageIndex)
+                                }
+                            }
+                            <script>
+                                function submitForm() {
+                                    document.getElementById("searchForm").submit();
+                                }
+                            </script>
+                            <!-- The Sorting box -->
+                            @if(Model != null)
+                            {
+                                 string currentSortBy = Context.Request.Query["sortBy"];
+                                <select class="form-control text-center" onchange="location = this.value;">
+                                    <option value="">-- Sort --</option>
+                                    @{
+                                        foreach(ExerciseTypes exerciseTypes in Model.ExerciseTypes)
+                                        {
+                                            <option value="@Url.Action("UserExercises", new { tab = Model.Tab, sortBy = exerciseTypes.Name })"
+                                            selected="@(exerciseTypes.Name == currentSortBy ? "selected" : null)">@exerciseTypes.Name</option>
+                                        }
+                                    }
+                                    <option value="@Url.Action("UserExercises", new { tab = Model.Tab, sortBy = "name_desc" })"
+                                    selected="@(currentSortBy == "name_desc" ? "selected" : null)">Name Desc.</option>
+                                    <option value="@Url.Action("UserExercises", new { tab = Model.Tab, sortBy = "name_asc" })"
+                                    selected="@(currentSortBy == "name_asc" ? "selected" : null)">Name Asc.</option>
+                                </select>
+                            }
+                        </div>
+                        <!-- Partial View to render the Exercises and their page buttons -->
+                        @if (Model.Exercises != null && Model.Exercises.Any() == true)
+                        {
+                        <div id="exercise-container">
+                            @Html.Partial("_ExerciseItems", Model)
+                        </div>
+                        } else if (Model.FavoriteExercises != null && Model.FavoriteExercises.Any() == true)
+                        {
+                        <div id="exercise-container">
+                            @Html.Partial("_ExerciseItems", Model)
+                        </div>
+                        } else
+                        {
+                            @if (Model.User == null)
+                            {
+                                <!-- If the user us not loggin in while on the favorites tab -->
+                                <div class="bg-primary w-100 p-3 rounded d-flex gap-3 flex-fill align-items-center justify-content-center text-center"><p class="text-white p-0 m-0">Make an account to favorite exercises!</p></div>
+                            }
+                            else
+                            {
+                                <!-- If no exercises are found -->
+                                <div class="bg-primary w-100 p-3 rounded d-flex gap-3 flex-fill align-items-center justify-content-center text-center"><p class="text-white p-0 m-0">No Exercises were found!</p></div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

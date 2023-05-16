@@ -1,0 +1,229 @@
+﻿@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model RoutinesViewModel;
+
+<!-- If the Routines list is not null and has entries -->
+@if (Model.Routines != null && Model.Routines.Any() == true)
+{
+    // Loop through each routine in the list
+    @foreach (Routines routine in Model.Routines)
+    {
+        string name = routine.User == null ? "admin" : routine.User.Nickname!;
+        string link = routine.User == null ? "admin" : routine.User.UserName!;
+        string profileImg = "/images/user.png";
+        if (routine.User != null)
+            profileImg = (routine.User.ProfileImageUrl == "" || routine.User.ProfileImageUrl == null) ? "/images/user.png" : routine.User.ProfileImageUrl;
+        // Set the exercise description, if no description is found, set it to a default value
+        string description = routine.Description == null ? "<No description found>" : routine.Description;
+        <div class="bg-primary w-100 p-3 mb-1 rounded d-flex gap-3 flex-fill align-items-center justify-content-between">
+            <div class="text-white fw-bold d-flex gap-2 align-items-center" style="width: 100px; overflow-wrap: break-word;">
+                <!-- Determines favorite icon status -->
+                <a class="favorite-button" href="#" data-routine-id="@routine.Id" data-favorited="@routine.UserFavorited">
+                    @if (routine.UserFavorited == true)
+                    {
+                        <i class="fa-solid fa-star text-warning"></i>
+                    }
+                    else if (Model.User == null)
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                </a>
+                <a asp-controller="Routines" asp-action="UserRoutinesDetail" asp-route-id="@routine.Name" class="text-white text-center text-decoration-none" style="min-width:100px; padding-right: 10px;">@routine.Name</a>
+            </div>
+            <div class="text-white" style="padding-left:20px; flex-grow: 1; overflow-wrap: break-word;">@description</div>
+            <div class="text-white d-flex gap-2 align-items-center">
+                <img width="24" height="24" style="border-radius: 9999px;" src="@profileImg" />
+                <a class="fw-bold text-white text-decoration-none" asp-controller="Account" asp-action="Overview" asp-route-id="@link">@name</a>
+            </div>
+        </div>
+    }
+
+    // If there are routines to display and the tab is set to the routines or created page or null
+    @if (Model.Routines != null && (Model.Tab == "routines" || Model.Tab == "created" || Model.Tab == null))
+    {
+        // Calculate the number of pages
+        var totalPages = Model.Routines.TotalPages;
+        // Calculate the current page index
+        var currentPage = Model.Routines.PageIndex;
+        // Calculate the page range to display
+        var pageRange = 3;
+        var minPage = Math.Max(1, currentPage - pageRange);
+        var maxPage = Math.Min(totalPages, currentPage + pageRange);
+
+        <nav aria-label="Exercise pagination">
+            <ul class="pagination justify-content-center">
+                <!-- If the Routine list has a previous page -->
+                @if (Model.Routines.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = Model.Routines.PageIndex - currentPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+                <!-- If the user clicks on a page number -->
+                @for (var i = minPage; i <= maxPage; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = i, tab = Model.Tab, sortBy = ViewBag.SortBy })">@i</a>
+                    </li>
+                }
+                <!-- If the Routine list has a next page -->
+                @if (Model.Routines.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = Model.Routines.PageIndex + maxPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    // Else if there are no routines in the list, and there are FavoriteRoutines to display
+} else if (Model.FavoriteRoutines != null && Model.FavoriteRoutines.Any() == true)
+{
+    // Loop through each routine in the list
+    @foreach (Routines routine in Model.FavoriteRoutines)
+    {
+        // Set the routine description, if no description is found, set it to a default value
+        string name = routine.User == null ? "admin" : routine.User.Nickname!;
+        string link = routine.User == null ? "admin" : routine.User.UserName!;
+        string profileImg = "/images/user.png";
+        if (routine.User != null)
+            profileImg = (routine.User.ProfileImageUrl == "" || routine.User.ProfileImageUrl == null) ? "/images/user.png" : routine.User.ProfileImageUrl;
+        // Set the exercise description, if no description is found, set it to a default value
+        string description = routine.Description == null ? "<No description found>" : routine.Description;
+        <div class="bg-primary w-100 p-3 mb-1 rounded d-flex gap-3 flex-fill align-items-center justify-content-between">
+            <div class="text-white fw-bold d-flex gap-2 align-items-center" style="width: 100px; overflow-wrap: break-word;">
+                <!-- Determines favorite icon status -->
+                <a class="favorite-button" href="#" data-routine-id="@routine.Id" data-favorited="@routine.UserFavorited">
+                    @if (routine.UserFavorited == true)
+                    {
+                        <i class="fa-solid fa-star text-warning"></i>
+                    }
+                    else if (Model.User == null)
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-star text-warning"></i>
+                    }
+                </a>
+                <a asp-controller="Routines" asp-action="UserRoutinesDetail" asp-route-id="@routine.Name" class="text-white text-center text-decoration-none" style="min-width:100px; padding-right: 10px;">@routine.Name</a>
+            </div>
+            <div class="text-white" style="padding-left:20px; flex-grow: 1; overflow-wrap: break-word;">@description</div>
+            <div class="text-white d-flex gap-2 align-items-center">
+                <img width="24" height="24" style="border-radius: 9999px;" src="@profileImg" />
+                <a class="fw-bold text-white text-decoration-none" asp-controller="Account" asp-action="Overview" asp-route-id="@link">@name</a>
+            </div>
+        </div>
+    }
+
+    // If there are FavoriteRoutines to display and the tab is set to favorites or null
+    @if (Model.FavoriteRoutines != null && (Model.Tab == "favorites" || Model.Tab == null))
+    {
+        // Calculate the number of pages
+        var totalPages = Model.FavoriteRoutines.TotalPages;
+        // Calculate the current page index
+        var currentPage = Model.FavoriteRoutines.PageIndex;
+        // Calculate the page range to display
+        var pageRange = 3;
+        var minPage = Math.Max(1, currentPage - pageRange);
+        var maxPage = Math.Min(totalPages, currentPage + pageRange);
+
+        <nav aria-label="Exercise pagination">
+            <ul class="pagination justify-content-center">
+                <!-- If the FavoriteExercise list has a previous page -->
+                @if (Model.FavoriteRoutines.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = Model.FavoriteRoutines.PageIndex - currentPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+                <!-- If the user clicks on a page number -->
+                @for (var i = minPage; i <= maxPage; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = i, tab = Model.Tab, sortBy = ViewBag.SortBy })">@i</a>
+                    </li>
+                }
+                <!-- If the FavoriteRoutines list has a next page -->
+                @if (Model.FavoriteRoutines.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("UserRoutines", new { pageNumber = Model.FavoriteRoutines.PageIndex + maxPage, tab = Model.Tab, sortBy = ViewBag.SortBy })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+}
+<!-- AJAX Calls to allow favoriting, and switching pages. -->
+<script defer>
+    $(function () {
+        // When the favorite button is clicked
+        $('.favorite-button').click(function (event) {
+            // Prevent the page from reloading
+            event.preventDefault();
+            // Get the exercise ID and favorite status
+            var routineId = $(this).data('routine-id');
+            var favorited = $(this).data('favorited');
+            // Get the URL to send the request to
+            var url = favorited ? '@Url.Action("UnfavoriteRoutine", "Action")' : '@Url.Action("FavoriteRoutine", "Action")';
+            $.ajax({
+                // Send the request as a POST
+                type: 'POST',
+                // The URL to send the request to
+                url: url,
+                // The data to send in the request
+                data: {
+                    // The routine to favorite/unfavorite
+                    id: routineId,
+                    // The current tab
+                    tab: '@Model.Tab',
+                    // If exercises and favorite exercises are both null, then there is no page number, otherwise, if exercises is null, then the page number is the index of the Favorite Exercises, otherwise, the page number is the Index of the Exercises
+                    pageNumber: '@(Model.Routines == null && Model.FavoriteRoutines == null ? "" : (Model.Routines == null ? Model.FavoriteRoutines.PageIndex : Model.Routines.PageIndex))',
+                    // The current user
+                    currentUser: '@User.Identity.Name'
+                },
+                success: function (data) {
+                    // Update the UI to reflect the new favorite status
+                    var icon = favorited ? '<i class="fa-regular fa-star text-warning"></i>' : '<i class="fa-solid fa-star text-warning"></i>';
+                    // Update the icon
+                    $('.favorite-button[data-routine-id="' + routineId + '"]').html(icon);
+                    $('.favorite-button[data-routine-id="' + routineId + '"]').data('favorited', !favorited);
+                }
+            });
+        });
+    });
+
+    $(function () {
+        // Add event handler for pagination links
+        $('.pagination a').on('click', function (event) {
+            event.preventDefault();
+
+            // Get the URL for the AJAX request
+            var url = $(this).attr('href');
+
+            // Make the AJAX request
+            $.get(url, function (data) {
+                // Extract the exercise items from the returned data
+                var routineItems = $(data).find('#routine-container').html();
+
+                // Update the exercise items container with the extracted items
+                $('#routine-container').html(routineItems);
+            });
+        });
+    });
+</script>

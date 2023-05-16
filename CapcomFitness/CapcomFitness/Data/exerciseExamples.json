@@ -1,0 +1,216 @@
+{
+  "Exercise Types": {
+    "Cardio": {
+      "Exercises": [
+        "Running",
+        "Walking",
+        "Biking",
+        "Hiking",
+        "Rollerblading",
+        "Rowing",
+        "Swimming",
+        "Water Aerobics"
+      ]
+    },
+    "Weight Training": {
+      "Exercises": [
+        "Bicep Curls",
+        "Lat Pull Downs",
+        "Dead Lift",
+        "TRX",
+        "Squats",
+        "Leg Press",
+        "Leg Extension",
+        "Leg Curl",
+        "Standing Calf Raise",
+        "Seated Calf Raise",
+        "Bench Press",
+        "Chest Fly",
+        "Push-up",
+        "Shoulder Press",
+        "Leg Raise",
+        "Back Extension"
+      ]
+    },
+    "Balance and Flexibility": {
+      "Exercises": [
+        "Hip Extension",
+        "Single Leg Squat",
+        "Yoga",
+        "Lunges",
+        "Hip Flexion",
+        "Knee Flexion",
+        "Knee Extension",
+        "Side Leg Raise",
+        "Plantar Flexion"
+      ]
+    }
+  },
+  "Exercise Descriptions": {
+    "Running": {
+      "content": [
+        "Running is the action of rapidly propelling yourself forward on foot. When running, there is a moment where both feet are off of the ground (as opposed to walking, when one foot is always on the ground), making it a high-impact exercise."
+      ]
+    },
+    "Walking": {
+      "content": [
+        "Move at a regular pace by lifting and setting down each foot in turn, never having both feet off the ground at once."
+      ]
+    },
+    "Biking": {
+      "content": [
+        "Propelling oneself on a bicycle using the feet and legs."
+      ]
+    },
+    "Hiking": {
+      "content": [
+        "Hiking is a long, vigorous walk, usually on trails or footpaths in the countryside."
+      ]
+    },
+    "Rollerblading": {
+      "content": [
+        "A form of cardio exercise, inline skating is also good for building strength endurance, especially in your thighs and glutes."
+      ]
+    },
+    "Rowing": {
+      "content": [
+        "An exercise where the purpose is to strengthen the back muscles that draw the rower's arms toward the body."
+      ]
+    },
+    "Swimming": {
+      "content": [
+        "The propulsion of the body through water by combined arm and leg motions and the natural flotation of the body."
+      ]
+    },
+    "Water Aerobics": {
+      "content": [
+        "Water aerobics is a form of aerobic exercise that requires water-immersed participants."
+      ]
+    },
+    "Bicep Curls": {
+      "content": [
+        "Hold a dumbbell with your palm facing upward. Slowly curl the weight up by bending your elbow."
+      ]
+    },
+    "Lat Pull Downs": {
+      "content": [
+        "While seated, you pull a hanging bar toward you to reach chin level, then release it back up with control for one repetition."
+      ]
+    },
+    "Dead Lift": {
+      "content": [
+        "Hips hinge backward to lower down and pick up a weighted barbell or kettlebell from the floor."
+      ]
+    },
+    "TRX": {
+      "content": [
+        "Suspension training that uses body weight exercises to develop strength, balance, flexibility and core stability simultaneously."
+      ]
+    },
+    "Squats": {
+      "content": [
+        "Bending at the knee, lower to a position in which the torso is erect and the knees are deeply bent and then rises to an upright position."
+      ]
+    },
+    "Leg Press": {
+      "content": [
+        "In a seated position, repeatedly press your feet against weights, which can be adjusted according to your fitness level."
+      ]
+    },
+    "Leg Extension": {
+      "content": [
+        "Sit with a weighted pad on top of your lower legs then use your quads to repeatedly extend your knees and lift your lower legs."
+      ]
+    },
+    "Leg Curl": {
+      "content": [
+        "Bend your knees and move your heels toward your glutes while the rest of your body stays still. Typically done with added weights for resistance."
+      ]
+    },
+    "Standing Calf Raise": {
+      "content": [
+        "A bodyweight exercise that targets the muscle groups in your lower legs."
+      ]
+    },
+    "Seated Calf Raise": {
+      "content": [
+        "From a seated position, bring your feet back, so your heels are behind your knees. Lift your heels up off the floor, coming up on to your toes."
+      ]
+    },
+    "Bench Press": {
+      "content": [
+        "Lay on a bench and press weight upward using either a barbell or a pair of dumbbells."
+      ]
+    },
+    "Chest Fly": {
+      "content": [
+        "A variation of the standard bench press that is performed by lying on a flat bench with a weight in each hand."
+      ]
+    },
+    "Push-up": {
+      "content": [
+        "In a prone position, palms planted below the shoulders, balls of feet on the floor, push the body up and let it down by straightening and bending the arms."
+      ]
+    },
+    "Shoulder Press": {
+      "content": [
+        "An upper body strength training movement, traditionally performed with dumbbells or a barbell."
+      ]
+    },
+    "Leg Raise": {
+      "content": [
+        "While keeping your legs straight, lift your legs a couple inches off the ground, and point your toes away from your body."
+      ]
+    },
+    "Back Extension": {
+      "content": [
+        "An isolation exercise that mainly targets your low back."
+      ]
+    },
+    "Hip Extension": {
+      "content": [
+        "Extend or hip joint so that the angle between the pelvis and thigh increases."
+      ]
+    },
+    "Single Leg Squat": {
+      "content": [
+        "A squat movement that's performed on only one leg."
+      ]
+    },
+    "Yoga": {
+      "content": [
+        "Using physical postures, breathing exercises, and meditation to improve overall health."
+      ]
+    },
+    "Lunges": {
+      "content": [
+        "Step forward, lower the body toward the ground, and return to the starting position."
+      ]
+    },
+    "Hip Flexion": {
+      "content": [
+        "Hip flexion happens every time you step, squat, sit, and revolve on a bike."
+      ]
+    },
+    "Knee Flexion": {
+      "content": [
+        "Knee flexion is a movement that decreases the angle between your thigh and your shin."
+      ]
+    },
+    "Knee Extension": {
+      "content": [
+        "The knee extension is an exercise you can do with a weight machine to work the muscle on the front of the thigh."
+      ]
+    },
+    "Side Leg Raise": {
+      "content": [
+        "Side leg raises is a core and leg exercise that involves you lying on the floor on your side, and abducting your leg (pushing them) away from the midline"
+      ]
+    },
+    "Plantar Flexion": {
+      "content": [
+        "Movement of the foot in a downward motion away from the body."
+      ]
+    }
+  }
+}

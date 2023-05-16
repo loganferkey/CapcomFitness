@@ -1,0 +1,69 @@
+﻿@if (TempData["SuccessMessage"] != null)
+{
+    <div class="container align-items-center mb-5">
+        <div class="toast align-items-center fw-bold show w-75 mx-auto" role="alert" aria-live="assertive" aria-atomic="true" style="padding-left:5%; border-left: 8px solid #198754; background-color:white; border-radius:7px; box-shadow: 0 15px 30px rgba(0,0,0,0.08);">
+            <div class="d-flex">
+                <div class="d-flex align-items-center me-2">
+                    <img src="~/images/success.png" alt="Success Icon" class="me-2">
+                </div>
+                <div class="toast-body">
+                    <ul>
+                        @foreach (var successMessage in TempData["SuccessMessage"].ToString().Split('\n'))
+                        {
+                            if (!string.IsNullOrEmpty(successMessage))
+                            {
+                                <li>@successMessage</li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="container align-items-center mb-5">
+        <div class="toast align-items-center fw-bold show w-75 mx-auto" role="alert" aria-live="assertive" aria-atomic="true" style="padding-left:5%; border-left: 8px solid #FFC107; background-color:white; border-radius:7px; box-shadow: 0 15px 30px rgba(0,0,0,0.08);">
+            <div class="d-flex">
+                <div class="d-flex align-items-center me-2">
+                    <img src="~/images/warning.png" alt="Warning Icon" class="me-2">
+                </div>
+                <div class="toast-body">
+                    <ul>
+                        @foreach (var errorMessage in TempData["ErrorMessage"].ToString().Split('\n'))
+                        {
+                            if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <li>@errorMessage</li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container d-flex flex-row justify-content-center gap-3">
+    <div class="d-flex flex-column gap-1">
+        <a class="btn btn-primary" asp-controller="Routines" asp-action="Index">Routines</a>
+        <a class="btn btn-primary" asp-controller="Exercises" asp-action="Index">Exercises</a>
+        <a class="btn btn-primary" asp-controller="RoutineExercises" asp-action="Index">Routine Exercises</a>
+        <a class="btn btn-primary" asp-controller="ExerciseTypes" asp-action="Index">Exercise Types</a>
+        <a class="btn btn-primary" asp-controller="ExerciseExerciseTypes" asp-action="Index">Exercise -> Exercise Type</a>
+        <a class="btn btn-primary" asp-controller="UserFavoriteExercises" asp-action="Index">User Favorite Exercises</a>
+        <a class="btn btn-primary" asp-controller="UserFavoriteRoutines" asp-action="Index">User Favorite Routines</a>
+        <a class="btn btn-primary" asp-controller="WeightHistories" asp-action="Index">Weight Histories</a>
+        <a class="btn btn-primary" asp-controller="Comments" asp-action="Index">Comments</a>
+    </div>
+    <div class="d-flex flex-column gap-1">
+        <a asp-controller="Admin" asp-action="SeedUsersAndRoles" class="btn btn-primary">Seed Users & Roles</a>
+        <a asp-controller="Admin" asp-action="SeedExerciseTypes" class="btn btn-primary">Seed Exercise Types</a>
+        <a asp-controller="Admin" asp-action="SeedExercises" class="btn btn-primary">Seed Exercises</a>
+        <a asp-controller="Admin" asp-action="SeedEET" class="btn btn-primary">Populate Exercise/Exercise Type</a>
+    </div>
+</div>

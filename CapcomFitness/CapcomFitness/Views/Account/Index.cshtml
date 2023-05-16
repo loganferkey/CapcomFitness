@@ -1,0 +1,95 @@
+﻿@inject IUtility _utility;
+@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model Settings
+@{
+    ViewData["Title"] = "Settings";
+    var user = await _utility.getHTTPContextUser();
+    string profileImg = "/images/user.png";
+    if (user.ProfileImageUrl != null && user.ProfileImageUrl != "")
+        profileImg = user.ProfileImageUrl;
+}
+
+<div class="row my-auto bg-primary rounded p-4">
+    <div class="d-flex flex-row gap-3">
+        <!--Temporary image background just to add feel to the page-->
+        <img class="profile-image" src="@profileImg" style="width: 100px; height: 100px; border-radius: 100px;" />
+        <div class="d-flex flex-column justify-content-center">
+            <h2 class="mb-0 text-white">@user.UserName</h2>
+            <small class="text-white opacity-75">@user.Email </small>
+            <small class="text-white opacity-75">Id: @user.Id </small>
+        </div>
+    </div>
+</div>
+
+<div class="row my-auto bg-primary rounded p-4 mt-2">
+    <div class="mx-auto col-sm-10 col-md-8 col-lg-6">
+        @if (TempData["Feedback"] != null)
+        {
+            <div class="alert alert-dismissible alert-primary pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <p>@TempData["Feedback"]</p>
+            </div>
+        }
+        <form asp-controller="Account" asp-action="Index" method="post" enctype="multipart/form-data" role="form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-floating mb-2">
+                <input asp-for="Nickname" value="@Model.Nickname" class="form-control" />
+                <label asp-for="Nickname" class="">Nickname</label>
+            </div>
+            <div class="form-floating mb-2">
+                <textarea style="height: 90px;" asp-for="Biography" value="@Model.Biography" class="form-control"></textarea>
+                <label asp-for="Biography" class="">Bio</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Age" value="@Model.Age" class="form-control" />
+                <label asp-for="Age" class="">Age</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Location" value="@Model.Location" class="form-control" />
+                <label asp-for="Location" class="">Location</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Website" value="@Model.Website" class="form-control" />
+                <label asp-for="Website" class="">Website URL</label>
+            </div>
+            <div class="form-group mb-2">
+                <input asp-for="Image" type="file" accept=".jpg, .jpeg, .png" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button disabled id="saveChanges" type="submit" class="btn btn-lg btn-primary border border-white">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Basically the save button is disabled by default, we'll enable it if the user makes change to their settings only, to avoid pressing save with no changes made -->
+@section Scripts {
+    <script>
+        $("form").change(function() {
+          console.log("changing");
+          $("#saveChanges").removeAttr('disabled');
+        });
+        $("input").change(function() {
+            console.log("changing");
+          $("#saveChanges").removeAttr('disabled');
+        });
+        $("form").keyup(function () {
+            console.log("changing");
+            $("#saveChanges").removeAttr('disabled');
+        });
+        $("input").keyup(function () {
+            console.log("changing");
+            $("#saveChanges").removeAttr('disabled');
+        });
+        $("textarea").keyup(function () {
+            console.log("changing");
+            $("#saveChanges").removeAttr('disabled');
+        });
+        $("textarea").keyup(function () {
+            console.log("changing");
+            $("#saveChanges").removeAttr('disabled');
+        });
+    </script>
+}

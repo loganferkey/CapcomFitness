@@ -1,0 +1,23 @@
+{
+  "Types": [
+    "Cardio",
+    "HIIT",
+    "Weightlifting",
+    "Balance/Flexibility",
+    "Yoga"
+  ],
+  "Exercises": {
+    "Running": {
+      "Description": "Running is the action of rapidly propelling yourself forward on foot. When running, there is a moment where both feet are off of the ground (as opposed to walking, when one foot is always on the ground), making it a high-impact exercise.",
+      "ExTypes": [ "Cardio", "HIIT" ]
+    },
+    "Walking": {
+      "Description": "Move at a regular pace by lifting and setting down each foot in turn, never having both feet off the ground at once.",
+      "ExTypes": [ "Cardio" ]
+    },
+    "Biking": {
+      "Description": "Propelling oneself on a bicycle using the feet and legs.",
+      "ExTypes":  [ "Cardio", "HIIT" ]
+    }
+  }
+}

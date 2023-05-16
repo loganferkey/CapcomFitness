@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Exercises>
+
+@foreach (var exercise in Model)
+{
+    <div class="card mb-3 bg-primary text-white">
+        <div class="card-body">
+            <h5 class="card-title">@exercise.Name</h5>
+            <p class="card-text">@exercise.Description</p>
+        </div>
+    </div>
+}

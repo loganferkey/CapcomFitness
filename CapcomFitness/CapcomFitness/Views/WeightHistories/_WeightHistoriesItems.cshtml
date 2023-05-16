@@ -1,0 +1,82 @@
+﻿@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model WeightHistoryViewModel;
+
+<!-- If the list of Weight Histories is not empty -->
+@if (Model.WeightHistoriesPaginated != null && Model.WeightHistoriesPaginated.Any() == true)
+{
+	<!-- Loop through each weight history in the paginated list -->
+	@foreach (WeightHistory weightHistory in Model.WeightHistoriesPaginated)
+	{
+		<div class="bg-primary w-100 p-3 mb-1 rounded d-flex gap-3 flex-fill align-items-center justify-content-between">
+			<div class="text-white fw-bold d-flex gap-2 align-items-center">
+				@weightHistory.Weight
+			</div>
+			<div class="text-white text-center">@weightHistory.DateEntered</div>
+		</div>
+	}
+	@if (Model.WeightHistoriesPaginated != null)
+	{
+		// Calculate the number of pages
+		var totalPages = Model.WeightHistoriesPaginated.TotalPages;
+		// Calculate the current page index
+		var currentPage = Model.WeightHistoriesPaginated.PageIndex;
+		// Calculate the page range to display
+		var pageRange = 3;
+		var minPage = Math.Max(1, currentPage - pageRange);
+		var maxPage = Math.Min(totalPages, currentPage + pageRange);
+
+		<nav aria-label="Exercise pagination">
+			<ul class="pagination justify-content-center">
+				@if (Model.WeightHistoriesPaginated.HasPreviousPage)
+				{
+					<li class="page-item">
+						<a class="page-link" href="@Url.Action("Tracker", new { pageNumber = Model.WeightHistoriesPaginated.PageIndex - currentPage, sortBy = ViewBag.SortBy })" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+				}
+
+				@for (var i = minPage; i <= maxPage; i++)
+				{
+					<li class="page-item @(i == currentPage ? "active" : "")">
+						<a class="page-link" href="@Url.Action("Tracker", new { pageNumber = i, sortBy = ViewBag.SortBy })">@i</a>
+					</li>
+				}
+
+				@if (Model.WeightHistoriesPaginated.HasNextPage)
+				{
+					<li class="page-item">
+						<a class="page-link" href="@Url.Action("Tracker", new { pageNumber = Model.WeightHistoriesPaginated.PageIndex + maxPage, sortBy = ViewBag.SortBy })" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				}
+			</ul>
+		</nav>
+	}
+
+}
+
+
+<!-- Below is the code for the previous and next buttons -->
+<script defer>
+	$(function () {
+        // Add event handler for pagination links
+        $('.pagination a').on('click', function (event) {
+            event.preventDefault();
+
+            // Get the URL for the AJAX request
+            var url = $(this).attr('href');
+
+            // Make the AJAX request
+            $.get(url, function (data) {
+                // Extract the exercise items from the returned data
+                var weightHistoryItems = $(data).find('#weightHistory-container').html();
+
+                // Update the exercise items container with the extracted items
+                $('#weightHistory-container').html(weightHistoryItems);
+            });
+        });
+    });
+</script>

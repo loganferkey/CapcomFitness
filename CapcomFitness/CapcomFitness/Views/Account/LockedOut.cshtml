@@ -1,0 +1,18 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Locked Out";
+}
+
+<div class="text-center mt-5">
+    <div class="d-flex flex-column flex-lg-row align-items-center">
+        <div class="mb-3" style="min-width: 50%;">
+            <h5 class="display-5 text-muted fw-bold">Locked Out?!</h5>
+            <p class="mx-auto" style="line-height: 1.5rem; width: 75%;">
+                You gotta cool it with the login attempts, wait two minutes to try again otherwise <a asp-controller="Home" asp-action="Index" role="button" class="text-muted">go home.</a>
+            </p>
+        </div>
+        <div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/denied.png" /></div>
+    </div>
+</div>

@@ -1,0 +1,108 @@
+﻿@using CapcomFitness.Data;
+@using CapcomFitness.Utility;
+@inject IUtility utility; 
+@{
+    AppUser? user = await utility.getHTTPContextUser();
+    string profilePicture = "/images/user.png";
+    if (user != null)
+    {
+        // If the user is valid, give the correct profile picture url
+        profilePicture = user.ProfileImageUrl;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FLEX FITNESS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CapcomFitness.styles.css" asp-append-version="true" />
+    <link rel="icon" href="~/flexlogo.ico" />
+    <script src="https://kit.fontawesome.com/7a78f5badb.js" crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+</head>
+<body>
+    <header class="bg-primary mb-3">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark text-primary py-1">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#classNavbar" aria-controls="classNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-around px-2 text-center" id="classNavbar">
+                    <div class="d-md-inline-flex">
+                        <img class="me-3" src="~/images/flexlogo.png" width="75px" height="50px" />
+                        <ul class="navbar-nav my-auto">
+                            <li class="nav-item dropdown mx-0">
+                                <a class="nav-link text-light" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item dropdown mx-0">
+                                <a class="nav-link text-light" asp-controller="Exercises" asp-action="UserExercises">Exercises</a>
+                            </li>
+                            <li class="nav-item dropdown mx-0">
+                                <a class="nav-link text-light" asp-controller="Routines" asp-action="UserRoutines">Routines</a>
+                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                            <li class="nav-item dropdown mx-0">
+                                <a class="nav-link text-light" asp-controller="WeightHistories" asp-action="Tracker">Tracker</a>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="d-inline-flex text-center">
+                        <ul class="navbar-nav">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <ul class="m-0 p-0">
+                                    <li class="nav-item dropdown list-unstyled">
+                                        <a class="nav-link text-light border-2 border-primary border-start-0 border-end-0 border-top-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <img class="me-1" style="width: 20px; height: 20px; border-radius: 9999px;" src="@profilePicture" /> @User.Identity.Name
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu">
+                                            @if (User.IsInRole(UserRoles.Admin))
+                                            {
+                                                <li><a class="dropdown-item text-danger" asp-controller="Admin" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i> Admin Access</a></li>
+                                            }
+                                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Overview" asp-route-id="@User.Identity.Name"><i class="fa-regular fa-user"></i> Profile</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Index"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            } 
+                            else
+                            {
+                                <li class="nav-item dropdown mx-0">
+                                    <a class="nav-link text-light" asp-controller="Account" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item dropdown mx-0">
+                                    <a class="nav-link text-light" asp-controller="Account" asp-action="Register">Register</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-center bg-primary text-light">
+        <div class="container">
+            &copy; 2023 - CapcomFitness - <a asp-area="" asp-controller="Home" asp-action="Index"></a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

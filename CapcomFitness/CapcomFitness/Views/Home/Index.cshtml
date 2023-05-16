@@ -1,0 +1,185 @@
+﻿@using CapcomFitness.Data;
+@{
+    ViewData["Title"] = "Home";
+}
+
+@model IEnumerable<Exercises>
+
+<div class="text-center mt-5">
+    <div class="d-flex flex-column flex-lg-row gap-2 align-items-center">
+        <div class="mb-3" style="min-width: 50%;">
+            <h5 class="display-5 text-muted fw-bold">Exercise Confidently.</h5>
+            <p class="mx-auto" style="line-height: 1.5rem; width: 75%;">Why FLEX Fitness? Using our app streamlines the way you look at fitness. Save all your favorite exercises to your account to keep them all in one place! Combine your favorite exercises
+                for each day of the week to make an easy to use exercise routine, as well as monitor your weight progress, all for free!
+            </p>
+        </div>
+        <div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/exercise.png" /></div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var exercise in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <a href="@Url.Action("UserExercises", "Exercises")">
+                    <div class="card h-100 mb-4 text-white box-shadow text-center" style="background-color:#305985;">
+                        <div class="card-body">
+                            
+                                @{
+                                    if(exercise != null)
+                                    {
+                                    <h5 class="card-title text-center">
+                                            @{
+                                                List<string> exTypeList = exercise.ExType?.Count > 0 ? exercise.ExType : new List<string> { "N/A" };
+
+                                                if (exTypeList != null)
+                                                {
+                                                    foreach (string exType in exTypeList)
+                                                    {
+                                                        string fileName = string.Empty;
+                                                        string caption = string.Empty;
+                                                        exType.ToLower();
+
+                                                        // change values back to match master db
+                                                        switch (exType)
+                                                        {
+                                                            case "2":
+                                                                fileName = "hiit.png";
+                                                                caption = "HIIT";
+                                                                break;
+
+                                                            case "3":
+                                                                fileName = "weightlifting.png";
+                                                                caption = "Weightlifting";
+                                                                break;
+
+                                                            case "4":
+                                                                fileName = "balance-flexibility.png";
+                                                                caption = "Balance/Flexibility";
+                                                                break;
+
+                                                            case "5":
+                                                                fileName = "yoga.png";
+                                                                caption = "Yoga";
+                                                                break;
+
+                                                            case "1":
+                                                                fileName = "cardio.png";
+                                                                caption = "Cardio";
+                                                                break;
+
+                                                            default:
+                                                                fileName = "defaultexercise.png";
+                                                                caption = "General Exercise";
+                                                                break;
+                                                        }
+                                                    
+                                                            <img src="~/images/@fileName" alt="exercise icon" data-bs-toggle="tooltip" title="@caption" aria-label="Image">
+                                                    }
+                                                }
+                                            <br><p>
+                                            - @exercise.Name -</p>
+                                        }
+                                    </h5>
+
+                                        <p class="card-text">@exercise.Description</p><br />
+                                    }
+                                }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="container fontainer-fluid text-center py-5">
+    <p class="text-center">
+        Stuck in a workout rut? Not interested in these options?<br />
+        Try our new <u>RANDOM ROUTINE GENERATOR</u>:
+    </p>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#routineModal">Get Random Routine</button>
+</div>
+
+<div class="modal fade" id="routineModal" tabindex="-1" aria-labelledby="routineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="routineModalLabel">Random Routine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="routineResults">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <select id="exerciseType" class="form-control text-center">
+                    <option value="">- Select Type -</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="HIIT">HIIT</option>
+                    <option value="Weightlifting">Weightlifting</option>
+                    <option value="Balance/Flexibility">Balance/Flexibility</option>
+                    <option value="Yoga">Yoga</option>
+                    
+                </select>
+                <button type="button" id="regenerate" class="btn btn-primary">Regenerate</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            $("#routineModal").on("show.bs.modal", function (e) {
+                var url = "@Url.Action("GenerateRoutine", "Home")";
+                var exerciseType = $("#exerciseType").val();
+                $.ajax({
+                    type: "GET",
+                    url: url + "?exerciseType=" + exerciseType,
+                    success: function (data) {
+                        $("#routineResults").html(data);
+                    },
+                    error: function () {
+                        alert("Routine could not be generated at this time.");
+                    }
+                });
+            });
+            $("#regenerate").on("click", function () {
+                var url = "@Url.Action("GenerateRoutine", "Home")";
+                var exerciseType = $("#exerciseType").val();
+                $.ajax({
+                    type: "GET",
+                    url: url + "?exerciseType=" + exerciseType,
+                    success: function (data) {
+                        $("#routineResults").html(data);
+                    },
+                    error: function () {
+                        alert("Routine could not be generated at this time.");
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <img src="@Url.Content("~/images/circlestretch.jpg")" alt="Vibrant stretch" class="img-fluid"/>
+    </div>
+</div>
+
+<div class="container text-center mt-5 mb-5">
+    <h3>No matter what your workout looks like,</h3>
+    <p style="font-size:2em;"><b class="text-primary">FLEX </b>can help you track your progress and</p>
+    <h2><b>MEET <u>YOUR</u> GOALS!</b></h2>
+</div>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <img src="@Url.Content("~/images/runners.jpg")" alt="" class="img-fluid" />
+    </div>
+</div>

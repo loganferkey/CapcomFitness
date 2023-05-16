@@ -1,0 +1,155 @@
+﻿@using CapcomFitness.Utility;
+@using CapcomFitness.ViewModels;
+@model RoutinesViewModel;
+@{
+    ViewData["Title"] = "Routines";
+}
+
+@if (Model == null)
+{
+    // If there aren't any routines
+    <div class="text-center mt-5">
+        <div class="d-flex flex-column flex-lg-row align-items-center">
+            <div class="mb-3" style="min-width: 50%;">
+                <h5 class="display-5 text-muted fw-bold">We're Sorry!</h5>
+                <p class="mx-auto" style="line-height: 1.5rem; width: 75%;">
+                    It would appear we haven't gotten around to adding routines quite yet, if you'd like to start it off by adding your own you can do so <a asp-controller="Routines" asp-action="UserCreateRoutine" class="text-muted">here.</a>
+                </p>
+            </div>
+            <div style="min-width: 50%; max-width: 85%;"><img class="img-fluid" src="~/images/notfound.png" /></div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="modal fade" id="createRoutine" tabindex="-1" aria-labelledby="createRoutineLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header pb-0">
+                    <h1 class="modal-title fs-5" id="createRoutineLabel">Create Routine</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-controller="Routines" asp-action="UserCreateRoutine">
+                    <div class="modal-body pt-0">
+                        <div class="form-floating mb-2">
+                            <input required type="text" maxlength="40" placeholder="Name" name="Name" class="form-control" />
+                            <label for="Name">Name</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <textarea style="min-height: 110px;" maxlength="120" name="Description" placeholder="Description" class="form-control"></textarea>
+                            <label for="Description">Description</label>
+                        </div>
+                        <div class="form-group form-check mb-2">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="Private" /> Private?
+                            </label>
+                        </div>
+                        <small class="text-muted">Don't worry about adding exercises just yet! You can do it after creating the routine in the details page.</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-10 mx-auto">
+            <div class="d-flex flex-column flex-sm-row gap-3">
+                <form class="flex-column nav nav-pills">
+                    @if (Model.Tab == "favorites")
+                    {
+                        <button class="nav-link" name="tab" value="routines" type="submit">Routines</button>
+                        <button class="nav-link active" name="tab" value="favorites" type="submit">Favorites</button>
+                        <button class="nav-link" name="tab" value="created" type="submit">Created</button>
+                    }
+                    else if (Model.Tab == "created")
+                    {
+                        <button class="nav-link" name="tab" value="routines" type="submit">Routines</button>
+                        <button class="nav-link" name="tab" value="favorites" type="submit">Favorites</button>
+                        <button class="nav-link active" name="tab" value="created" type="submit">Created</button>
+                    }
+                    else
+                    {
+                        <button class="nav-link active" name="tab" value="routines" type="submit">Routines</button>
+                        <button class="nav-link" name="tab" value="favorites" type="submit">Favorites</button>
+                        <button class="nav-link" name="tab" value="created" type="submit">Created</button>
+                    }
+
+                </form>
+                <div class="tab-content w-100">
+                    <div class="tab-pane d-flex gap-1 flex-column">
+                        <div class="w-100 d-flex justify-content-between">
+                            @using (Html.BeginForm("UserRoutines", "Routines", FormMethod.Get, new { id = "searchForm" }))
+                            {
+                                <div class="form-group">
+                                    @Html.TextBox("SearchString", null, new { @class = "form-control text-center", placeholder = "Search", onblur = "submitForm()" })
+                                </div>
+                                @Html.Hidden("tab", Model.Tab)
+                                @if (Model.User != null && Model.Routines != null)
+                                {
+                                    @Html.Hidden("pageNumber", Model.Routines.PageIndex)
+                                }
+                                else if (Model.User != null && Model.FavoriteRoutines != null)
+                                {
+                                    @Html.Hidden("pageNumber", Model.FavoriteRoutines.PageIndex)
+                                }
+                            }
+                            <script>
+                                function submitForm() {
+                                    document.getElementById("searchForm").submit();
+                                }
+                            </script>
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col">
+                                    @if (Model != null)
+                                    {
+                                        string currentSortBy = Context.Request.Query["sortBy"];
+                                        <select class="form-control text-center" onchange="location = this.value;">
+                                            <option value="">-- Sort --</option>
+                                            <option value="@Url.Action("UserRoutines", new { tab = Model.Tab, sortBy = "name_desc" })"
+                                            selected="@(currentSortBy == "name_desc" ? "selected" : null)">Name Desc.</option>
+                                            <option value="@Url.Action("UserRoutines", new { tab = Model.Tab, sortBy = "name_asc" })"
+                                            selected="@(currentSortBy == "name_asc" ? "selected" : null)">Name Asc.</option>
+                                        </select>
+                                    }
+                                </div>
+                                @if (Model.User != null)
+                                {
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoutine">+</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        @if (Model.Routines != null && Model.Routines.Any() == true)
+                        {
+                            <div id="routine-container">
+                                @Html.Partial("_RoutineItems", Model)
+                            </div>
+                        }
+                        else if (Model.FavoriteRoutines != null && Model.FavoriteRoutines.Any() == true)
+                        {
+                            <div id="routine-container">
+                                @Html.Partial("_RoutineItems", Model)
+                            </div>
+                        }
+                        else
+                        {
+                            @if (Model.User == null)
+                            {
+                                <div class="bg-primary w-100 p-3 rounded d-flex gap-3 flex-fill align-items-center justify-content-center text-center"><p class="text-white p-0 m-0">Make an account to favorite or create Routines!</p></div>
+                            }
+                            else
+                            {
+                                <div class="bg-primary w-100 p-3 rounded d-flex gap-3 flex-fill align-items-center justify-content-center text-center"><p class="text-white p-0 m-0">No Routines Found!</p></div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

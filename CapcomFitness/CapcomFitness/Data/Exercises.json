@@ -1,0 +1,167 @@
+[
+  {
+    "Name": "Running",
+    "Description": "Running is the action of rapidly propelling yourself forward on foot. When running, there is a moment where both feet are off of the ground (as opposed to walking, when one foot is always on the ground), making it a high-impact exercise.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Walking",
+    "Description": "Move at a regular pace by lifting and setting down each foot in turn, never having both feet off the ground at once.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Biking",
+    "Description": "Propelling oneself on a bicycle using the feet and legs.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Hiking",
+    "Description": "Hiking is a long, vigorous walk, usually on trails or footpaths in the countryside.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Rollerblading",
+    "Description": "A form of cardio exercise, inline skating is also good for building strength endurance, especially in your thighs and glutes.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Rowing",
+    "Description": "An exercise where the purpose is to strengthen the back muscles that draw the rower's arms toward the body.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Swimming",
+    "Description": "The propulsion of the body through water by combined arm and leg motions and the natural flotation of the body.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Water Aerobics",
+    "Description": "Water aerobics is a form of aerobic exercise that requires water-immersed participants.",
+    "ExType": [ "Cardio" ]
+  },
+  {
+    "Name": "Bicep Curls",
+    "Description": "Hold a dumbbell with your palm facing upward. Slowly curl the weight up by bending your elbow.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Lat Pull Downs",
+    "Description": "While seated, you pull a hanging bar toward you to reach chin level, then release it back up with control for one repetition.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Dead Lift",
+    "Description": "Hips hinge backward to lower down and pick up a weighted barbell or kettlebell from the floor.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "TRX",
+    "Description": "Suspension training that uses body weight exercises to develop strength, balance, flexibility and core stability simultaneously.",
+    "ExType": [ "Weightlifting", "HIIT" ]
+  },
+  {
+    "Name": "Squats",
+    "Description": "Bending at the knee, lower to a position in which the torso is erect and the knees are deeply bent and then rises to an upright position.",
+    "ExType": [ "Weightlifting", "HIIT" ]
+  },
+  {
+    "Name": "Leg Press",
+    "Description": "In a seated position, repeatedly press your feet against weights, which can be adjusted according to your fitness level.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Leg Extension",
+    "Description": "Sit with a weighted pad on top of your lower legs then use your quads to repeatedly extend your knees and lift your lower legs.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Leg Curl",
+    "Description": "Bend your knees and move your heels toward your glutes while the rest of your body stays still. Typically done with added weights for resistance.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Standing Calf Raise",
+    "Description": "A bodyweight exercise that targets the muscle groups in your lower legs.",
+    "ExType": [ "Weightlifting", "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Seated Calf Raise",
+    "Description": "From a seated position, bring your feet back, so your heels are behind your knees. Lift your heels up off the floor, coming up on to your toes.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Bench Press",
+    "Description": "Lay on a bench and press weight upward using either a barbell or a pair of dumbbells.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Chest Fly",
+    "Description": "A variation of the standard bench press that is performed by lying on a flat bench with a weight in each hand.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Push-up",
+    "Description": "In a prone position, palms planted below the shoulders, balls of feet on the floor, push the body up and let it down by straightening and bending the arms.",
+    "ExType": [ "HIIT" ]
+  },
+  {
+    "Name": "Shoulder Press",
+    "Description": "An upper body strength training movement, traditionally performed with dumbbells or a barbell.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Leg Raise",
+    "Description": "While keeping your legs straight, lift your legs a couple inches off the ground, and point your toes away from your body.",
+    "ExType": [ "Yoga" ]
+  },
+  {
+    "Name": "Back Extension",
+    "Description": "An isolation exercise that mainly targets your low back.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Hip Extension",
+    "Description": "Extend or hip joint so that the angle between the pelvis and thigh increases.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Single Leg Squat",
+    "Description": "A squat movement that's performed on only one leg.",
+    "ExType": [ "Weightlifting", "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Yoga",
+    "Description": "Using physical postures, breathing exercises, and meditation to improve overall health.",
+    "ExType": [ "Yoga", "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Lunges",
+    "Description": "Step forward, lower the body toward the ground, and return to the starting position.",
+    "ExType": [ "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Hip Flexion",
+    "Description": "Hip flexion happens every time you step, squat, sit, and revolve on a bike.",
+    "ExType": [ "Weightlifting", "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Knee Flexion",
+    "Description": "Knee flexion is a movement that decreases the angle between your thigh and your shin.",
+    "ExType": [ "Weightlifting", "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Knee Extension",
+    "Description": "The knee extension is an exercise you can do with a weight machine to work the muscle on the front of the thigh.",
+    "ExType": [ "Weightlifting" ]
+  },
+  {
+    "Name": "Side Leg Raise",
+    "Description": "Side leg raises is a core and leg exercise that involves you lying on the floor on your side, and abducting your leg (pushing them) away from the midline",
+    "ExType": [ "Balance/Flexibility" ]
+  },
+  {
+    "Name": "Plantar Flexion",
+    "Description": "Movement of the foot in a downward motion away from the body.",
+    "ExType": [ "Balance/Flexibility" ]
+  }
+]
